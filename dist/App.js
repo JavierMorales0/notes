@@ -9,6 +9,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 require("dotenv/config");
+// Import the routes
+const Note_1 = __importDefault(require("./routes/Note"));
 class App {
     constructor() {
         this.app = (0, express_1.default)();
@@ -18,7 +20,9 @@ class App {
     middlewares() {
         this.app.use(express_1.default.json());
     }
-    routes() { }
+    routes() {
+        this.app.use("/api/notes", Note_1.default);
+    }
     // port can be number or string
     listen(port) {
         this.app.listen(port, () => {
