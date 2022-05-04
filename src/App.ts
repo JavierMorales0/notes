@@ -6,7 +6,7 @@
 import express from "express";
 import "dotenv/config";
 // Import the routes
-import Note from "./routes/Note";
+import Note from "./routes/NoteRoute";
 
 class App {
   public app: express.Application;
@@ -19,6 +19,7 @@ class App {
 
   private middlewares(): void {
     this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true }));
   }
 
   private routes(): void {
