@@ -16,8 +16,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * Notes class with all the routes for the notes
  */
 const express_1 = require("express");
-const index_1 = __importDefault(require("../db/index"));
 const Note_1 = __importDefault(require("../models/Note"));
+const index_1 = __importDefault(require("../db/index"));
 class NoteController {
     // constructor with the router configuration
     constructor() {
@@ -31,7 +31,9 @@ class NoteController {
             try {
                 const sql = "SELECT * FROM notes";
                 const response = yield index_1.default.query(sql);
-                return res.status(200).json(response.rows);
+                return res.status(200).json({
+                    notes: response.rows,
+                });
             }
             catch (err) {
                 return res.status(500).json(err);
@@ -53,14 +55,9 @@ class NoteController {
         this.router.post("/", (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const { title, description } = req.body;
-                if (!title) {
+                if (!title || !description) {
                     return res.status(400).json({
-                        message: "Title is required",
-                    });
-                }
-                if (!description) {
-                    return res.status(400).json({
-                        message: "Description is required",
+                        error: "Title and description are required",
                     });
                 }
                 const note = new Note_1.default(title, description);

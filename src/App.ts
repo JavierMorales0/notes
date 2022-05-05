@@ -26,6 +26,7 @@ class App {
     this.app.use("/api/notes", NoteController);
   }
 
+
   // port can be number or string
   public listen(port: number | string): void {
     this.app.listen(port, () => {

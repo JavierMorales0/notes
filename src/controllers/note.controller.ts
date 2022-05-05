@@ -2,8 +2,8 @@
  * Notes class with all the routes for the notes
  */
 import { Router } from "express";
-import conn from "../db/index";
 import Note from "../models/Note";
+import conn from "../db/index";
 
 class NoteController {
   // Setting the router
@@ -21,7 +21,9 @@ class NoteController {
       try {
         const sql = "SELECT * FROM notes";
         const response = await conn.query(sql);
-        return res.status(200).json(response.rows);
+        return res.status(200).json({
+          notes: response.rows,
+        });
       } catch (err) {
         return res.status(500).json(err);
       }
@@ -43,14 +45,9 @@ class NoteController {
     this.router.post("/", async (req, res) => {
       try {
         const { title, description } = req.body;
-        if (!title) {
+        if (!title || !description) {
           return res.status(400).json({
-            message: "Title is required",
-          });
-        }
-        if (!description) {
-          return res.status(400).json({
-            message: "Description is required",
+            error: "Title and description are required",
           });
         }
         const note = new Note(title, description);
