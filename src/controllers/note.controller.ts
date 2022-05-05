@@ -5,7 +5,7 @@ import { Router } from "express";
 import conn from "../db/index";
 import Note from "../models/Note";
 
-class NoteRoute {
+class NoteController {
   // Setting the router
   public router: Router;
 
@@ -43,6 +43,16 @@ class NoteRoute {
     this.router.post("/", async (req, res) => {
       try {
         const { title, description } = req.body;
+        if (!title) {
+          return res.status(400).json({
+            message: "Title is required",
+          });
+        }
+        if (!description) {
+          return res.status(400).json({
+            message: "Description is required",
+          });
+        }
         const note = new Note(title, description);
         const sql = "INSERT INTO notes (title, description) VALUES ($1, $2)";
         await conn.query(sql, [note.title, note.description]);
@@ -81,4 +91,4 @@ class NoteRoute {
   }
 }
 
-export default new NoteRoute().router;
+export default new NoteController().router;

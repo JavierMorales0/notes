@@ -6,7 +6,7 @@
 import express from "express";
 import "dotenv/config";
 // Import the routes
-import Note from "./routes/NoteRoute";
+import NoteController from "./controllers/note.controller";
 
 class App {
   public app: express.Application;
@@ -23,7 +23,7 @@ class App {
   }
 
   private routes(): void {
-    this.app.use("/api/notes", Note);
+    this.app.use("/api/notes", NoteController);
   }
 
   // port can be number or string
