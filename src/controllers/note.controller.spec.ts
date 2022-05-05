@@ -31,18 +31,18 @@ describe("POST - /api/notes ", () => {
     expect(response.status).toBe(201);
   });
 });
-/*
+
 describe("PUT - /api/notes/:id ", () => {
   test("sould return a status 200", async () => {
-    const response = await request(app).put("/notes/1").send({
-      title: "Testing title",
+    const response = await request(app).put("/api/notes/15").send({
+      title: "Testing title 15",
       description: "Testing description",
     });
     expect(response.status).toBe(200);
   });
 });
 
-
+/*
 describe("DELETE - /api/notes/:id ", () => {
   test("sould return a status 200", async () => {
     const response = await request(BASE_URL).delete("/notes/12").send();

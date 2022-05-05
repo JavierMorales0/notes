@@ -18,6 +18,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const Note_1 = __importDefault(require("../models/Note"));
 const index_1 = __importDefault(require("../db/index"));
+const express_validator_1 = require("express-validator");
 class NoteController {
     // constructor with the router configuration
     constructor() {
@@ -52,14 +53,16 @@ class NoteController {
             }
         }));
         // POST /api/notes
-        this.router.post("/", (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.router.post("/", (0, express_validator_1.body)("title").not().isEmpty().withMessage("Title is required"), (0, express_validator_1.body)("description")
+            .not()
+            .isEmpty()
+            .withMessage("Description is required"), (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const errors = (0, express_validator_1.validationResult)(req);
+            if (!errors.isEmpty()) {
+                return res.status(422).json({ errors: errors.array() });
+            }
             try {
                 const { title, description } = req.body;
-                if (!title || !description) {
-                    return res.status(400).json({
-                        error: "Title and description are required",
-                    });
-                }
                 const note = new Note_1.default(title, description);
                 const sql = "INSERT INTO notes (title, description) VALUES ($1, $2)";
                 yield index_1.default.query(sql, [note.title, note.description]);
@@ -70,7 +73,10 @@ class NoteController {
             }
         }));
         // PUT /api/notes/:id
-        this.router.put("/:id", (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.router.put("/:id", (0, express_validator_1.param)("id").isNumeric().withMessage("Id must be a number"), (0, express_validator_1.body)("title").not().isEmpty().withMessage("Title is required"), (0, express_validator_1.body)("description")
+            .not()
+            .isEmpty()
+            .withMessage("Description is required"), (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const { id } = req.params;
                 const { title, description } = req.body;
