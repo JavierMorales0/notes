@@ -20,7 +20,7 @@ class NoteController {
     // GET /api/notes
     this.router.get("/", async (req: Request, res: Response) => {
       try {
-        const sql = "SELECT * FROM notes";
+        const sql = "SELECT * FROM note";
         const response = await conn.query(sql);
         return res.status(200).json({
           notes: response.rows,
@@ -34,7 +34,7 @@ class NoteController {
     this.router.get("/:id", async (req: Request, res: Response) => {
       try {
         const { id } = req.params;
-        const sql = "SELECT * FROM notes WHERE id = $1";
+        const sql = "SELECT * FROM note WHERE id = $1";
         const response = await conn.query(sql, [id]);
         return res.status(200).json(response.rows);
       } catch (err) {
@@ -46,21 +46,26 @@ class NoteController {
     this.router.post(
       "/",
       body("title").not().isEmpty().withMessage("Title is required"),
-      body("description")
-        .not()
-        .isEmpty()
-        .withMessage("Description is required"),
+      body("content").not().isEmpty().withMessage("Content is required"),
+      body("is_important").isBoolean().withMessage("Is important is required"),
+      body("is_private").isBoolean().withMessage("Is private is required"),
       async (req: Request, res: Response) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
           return res.status(422).json({ errors: errors.array() });
         }
         try {
-          const { title, description } = req.body;
-          const note = new Note(title, description);
-          const sql = "INSERT INTO notes (title, description) VALUES ($1, $2)";
-          await conn.query(sql, [note.title, note.description]);
-          return res.status(201).json("Note created");
+          const { title, content, is_important, is_private, pass } = req.body;
+          const sql =
+            "INSERT INTO note (title, content, is_important, is_private, pass) VALUES ($1, $2, $3, $4, $5)";
+          const response = await conn.query(sql, [
+            title,
+            content,
+            is_important,
+            is_private,
+            pass,
+          ]);
+          return res.status(201).json(response.rows);
         } catch (err) {
           return res.status(500).json(err);
         }
@@ -68,28 +73,7 @@ class NoteController {
     );
 
     // PUT /api/notes/:id
-    this.router.put(
-      "/:id",
-      param("id").isNumeric().withMessage("Id must be a number"),
-      body("title").not().isEmpty().withMessage("Title is required"),
-      body("description")
-        .not()
-        .isEmpty()
-        .withMessage("Description is required"),
-      async (req: Request, res: Response) => {
-        try {
-          const { id } = req.params;
-          const { title, description } = req.body;
-          const note = new Note(title, description);
-          const sql =
-            "UPDATE notes SET title = $1, description = $2 WHERE id = $3";
-          await conn.query(sql, [note.title, note.description, id]);
-          return res.status(200).json("Note updated");
-        } catch (err) {
-          return res.status(500).json(err);
-        }
-      }
-    );
+   
 
     // DELETE /api/notes/:id
     this.router.delete(
@@ -98,7 +82,7 @@ class NoteController {
       async (req: Request, res: Response) => {
         try {
           const { id } = req.params;
-          const sql = "DELETE FROM notes WHERE id = $1";
+          const sql = "DELETE FROM note WHERE id = $1";
           await conn.query(sql, [id]);
           return res.status(200).json("Note deleted");
         } catch (err) {

@@ -26,12 +26,15 @@ describe("POST - /api/notes ", () => {
   test("sould return a status 201", async () => {
     const response = await request(app).post("/api/notes").send({
       title: "Testing title",
-      description: "Testing description",
+      content: "Testing description",
+      is_important: true,
+      is_private: false,
+      pass: "",
     });
     expect(response.status).toBe(201);
   });
 });
-
+/*
 describe("PUT - /api/notes/:id ", () => {
   test("sould return a status 200", async () => {
     const response = await request(app).put("/api/notes/15").send({

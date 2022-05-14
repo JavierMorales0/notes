@@ -20,37 +20,40 @@ let app;
 beforeAll(() => {
     app = application.app;
 });
-/*describe("GET - /api/notes ", () => {
-  test("sould return a status 200", async () => {
-    const response = await request(app).get("/api/notes").send();
-    expect(response.status).toBe(200);
-  });
-
-  test("sould return a list of notes", async () => {
-    const response = await request(app).get("/api/notes").send();
-    expect(response.body).toBeInstanceOf(Object);
-    console.log(response.body);
-  });
-});
-
-describe("POST - /api/notes ", () => {
-  test("sould return a status 201", async () => {
-    const response = await request(app).post("/api/notes").send({
-      title: "Testing title",
-      description: "Testing description",
-    });
-    expect(response.status).toBe(201);
-  });
-});*/
-describe("PUT - /api/notes/:id ", () => {
+describe("GET - /api/notes ", () => {
     test("sould return a status 200", () => __awaiter(void 0, void 0, void 0, function* () {
-        const response = yield (0, supertest_1.default)(app).put("/notes/15").send({
-            title: "Testing title 14",
-            description: "Testing description",
-        });
+        const response = yield (0, supertest_1.default)(app).get("/api/notes").send();
         expect(response.status).toBe(200);
     }));
+    test("sould return a list of notes", () => __awaiter(void 0, void 0, void 0, function* () {
+        const response = yield (0, supertest_1.default)(app).get("/api/notes").send();
+        expect(response.body).toBeInstanceOf(Object);
+        console.log(response.body);
+    }));
 });
+describe("POST - /api/notes ", () => {
+    test("sould return a status 201", () => __awaiter(void 0, void 0, void 0, function* () {
+        const response = yield (0, supertest_1.default)(app).post("/api/notes").send({
+            title: "Testing title",
+            content: "Testing description",
+            is_important: true,
+            is_private: false,
+            pass: "",
+        });
+        expect(response.status).toBe(201);
+    }));
+});
+/*
+describe("PUT - /api/notes/:id ", () => {
+  test("sould return a status 200", async () => {
+    const response = await request(app).put("/api/notes/15").send({
+      title: "Testing title 15",
+      description: "Testing description",
+    });
+    expect(response.status).toBe(200);
+  });
+});
+
 /*
 describe("DELETE - /api/notes/:id ", () => {
   test("sould return a status 200", async () => {

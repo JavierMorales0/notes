@@ -4,9 +4,10 @@
  */
 
 import express from "express";
-import "dotenv/config";
+import * as dotenv from "dotenv";
 // Import the routes
 import NoteController from "./controllers/note.controller";
+
 
 class App {
   public app: express.Application;
@@ -20,6 +21,7 @@ class App {
   private middlewares(): void {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
+    dotenv.config();
   }
 
   private routes(): void {

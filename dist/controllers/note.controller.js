@@ -16,7 +16,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * Notes class with all the routes for the notes
  */
 const express_1 = require("express");
-const Note_1 = __importDefault(require("../models/Note"));
 const index_1 = __importDefault(require("../db/index"));
 const express_validator_1 = require("express-validator");
 class NoteController {
@@ -30,7 +29,7 @@ class NoteController {
         // GET /api/notes
         this.router.get("/", (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const sql = "SELECT * FROM notes";
+                const sql = "SELECT * FROM note";
                 const response = yield index_1.default.query(sql);
                 return res.status(200).json({
                     notes: response.rows,
@@ -44,7 +43,7 @@ class NoteController {
         this.router.get("/:id", (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const { id } = req.params;
-                const sql = "SELECT * FROM notes WHERE id = $1";
+                const sql = "SELECT * FROM note WHERE id = $1";
                 const response = yield index_1.default.query(sql, [id]);
                 return res.status(200).json(response.rows);
             }
@@ -53,47 +52,33 @@ class NoteController {
             }
         }));
         // POST /api/notes
-        this.router.post("/", (0, express_validator_1.body)("title").not().isEmpty().withMessage("Title is required"), (0, express_validator_1.body)("description")
-            .not()
-            .isEmpty()
-            .withMessage("Description is required"), (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.router.post("/", (0, express_validator_1.body)("title").not().isEmpty().withMessage("Title is required"), (0, express_validator_1.body)("content").not().isEmpty().withMessage("Content is required"), (0, express_validator_1.body)("is_important").isBoolean().withMessage("Is important is required"), (0, express_validator_1.body)("is_private").isBoolean().withMessage("Is private is required"), (req, res) => __awaiter(this, void 0, void 0, function* () {
             const errors = (0, express_validator_1.validationResult)(req);
             if (!errors.isEmpty()) {
                 return res.status(422).json({ errors: errors.array() });
             }
             try {
-                const { title, description } = req.body;
-                const note = new Note_1.default(title, description);
-                const sql = "INSERT INTO notes (title, description) VALUES ($1, $2)";
-                yield index_1.default.query(sql, [note.title, note.description]);
-                return res.status(201).json("Note created");
+                const { title, content, is_important, is_private, pass } = req.body;
+                const sql = "INSERT INTO note (title, content, is_important, is_private, pass) VALUES ($1, $2, $3, $4, $5)";
+                const response = yield index_1.default.query(sql, [
+                    title,
+                    content,
+                    is_important,
+                    is_private,
+                    pass,
+                ]);
+                return res.status(201).json(response.rows);
             }
             catch (err) {
                 return res.status(500).json(err);
             }
         }));
         // PUT /api/notes/:id
-        this.router.put("/:id", (0, express_validator_1.param)("id").isNumeric().withMessage("Id must be a number"), (0, express_validator_1.body)("title").not().isEmpty().withMessage("Title is required"), (0, express_validator_1.body)("description")
-            .not()
-            .isEmpty()
-            .withMessage("Description is required"), (req, res) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                const { id } = req.params;
-                const { title, description } = req.body;
-                const note = new Note_1.default(title, description);
-                const sql = "UPDATE notes SET title = $1, description = $2 WHERE id = $3";
-                yield index_1.default.query(sql, [note.title, note.description, id]);
-                return res.status(200).json("Note updated");
-            }
-            catch (err) {
-                return res.status(500).json(err);
-            }
-        }));
         // DELETE /api/notes/:id
-        this.router.delete("/:id", (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.router.delete("/:id", (0, express_validator_1.param)("id").isNumeric().withMessage("Id must be a number"), (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const { id } = req.params;
-                const sql = "DELETE FROM notes WHERE id = $1";
+                const sql = "DELETE FROM note WHERE id = $1";
                 yield index_1.default.query(sql, [id]);
                 return res.status(200).json("Note deleted");
             }
