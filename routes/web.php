@@ -18,6 +18,7 @@ $router->get('/', function () use ($router) {
 });
 
 $router->get('/api/notes', 'NotesController@index');
+$router->get('/api/notes/auth', ['middleware' => 'token'], 'NotesController@auth');
 $router->get('/api/notes/{id}', 'NotesController@show');
 $router->post('/api/notes', 'NotesController@store');
 $router->put('/api/notes/{id}', 'NotesController@update');
