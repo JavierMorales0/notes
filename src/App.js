@@ -1,25 +1,54 @@
-import logo from './logo.svg';
 import './App.css';
+import { Routes, Route, Link, Outlet } from 'react-router-dom';
 
+const fam = { obj: 1, title: 'adsas' };
+const orderByName = () => {
+  return 'adadasd';
+};
+console.log(fam, orderByName);
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <Routes>
+      <Route path='/' element={<Layout />}>
+        <Route path='invoices' element={<Invoices />} />
+        <Route path='dashboard' element={<Dashboard />} />
+      </Route>
+      <Route path='/lola' element={<Layout />}>
+        <Route path='invoices' element={<Invoices />} />
+        <Route path='dashboard' element={<Dashboard />} />
+      </Route>
+    </Routes>
+  );
+}
+
+function Layout() {
+  return (
+    <div>
+      <h1>Welcome to the app!</h1>
+      <nav
+        className='adadasd ada dasd ajdh jhj hj ajdh ajsdh ajhdajs'
+        name='sdas'
+      >
+        <Link to='invoices'>Invoices</Link> |{' '}
+        <Link to='dashboard'>Dashboard</Link>
+      </nav>
+      <div className='content'>
+        <Outlet />
+      </div>
     </div>
   );
+}
+
+function Invoices() {
+  return (
+    <h1>
+      Invoices created because i really know you are using a new code formatter
+    </h1>
+  );
+}
+
+function Dashboard() {
+  return <h1>Dashboard</h1>;
 }
 
 export default App;
